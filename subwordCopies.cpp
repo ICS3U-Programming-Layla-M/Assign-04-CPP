@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <string>
+#include <stdexcept> 
 
 // define variables
 int charNumberInt, charNumberIntIndex, i = 0, timesRepeatedInt, len, counter;
@@ -18,7 +19,7 @@ std::string mainWord, charNumberString, mainWordSub;
 std::string timesRepeatedString, outputSub = "", subwordStartString;
 
 
-int output() {
+void output() {
     // output the subword repeated number of times specified
     for (counter = 0; counter < timesRepeatedInt; counter++) {
         outputSub = outputSub + mainWordSub;
@@ -57,6 +58,9 @@ int repetition() {
 
 int subwordSize() {
     while (true) {
+        len = mainWord.length();
+        i = subwordStartInt;
+        mainWordSub = "";
         // ask user to enter the size of the subword
         std::cout << "Enter the size of the subword: ";
         std::cin >> charNumberString;
@@ -64,31 +68,36 @@ int subwordSize() {
         try {
             // check if size is an integer
             charNumberInt = std::stoi(charNumberString);
-            i = subwordStartInt;
-            charNumberIntIndex = i + charNumberInt;
-            mainWordSub = "";
-            while (i < charNumberIntIndex) {
+
+            charNumberIntIndex = len - i;
+            while (i < len) {
                 // create the subword
                 c = mainWord[i];
                 mainWordSub += c;
                 i++;
             }
 
-            if (charNumberInt <= 0) {
-                // check if size is a not positive
-                std::cout << charNumberInt << " is not a positive number, ";
-                std::cout << "try again.\n";
+            if (charNumberInt > charNumberIntIndex) {
+                // check if subword size is too big
+                std::cout << mainWordSub << " does not have that many ";
+                std::cout << "characters, try again.\n";
             } else {
-                len = mainWord.length();
-                if (charNumberInt <= len) {
-                    // check if size is not bigger than word
-                    std::cout << "\n";
-                    repetition();
-                    break;
+
+                if (charNumberInt <= 0) {
+                    // check if size is a not positive
+                    std::cout << charNumberInt << " is not a positive number, ";
+                    std::cout << "try again.\n";
                 } else {
-                    // error message if size is too big
-                    std::cout << mainWordSub << " does not have that many ";
-                    std::cout << "characters, try again.\n";
+                    if (charNumberInt <= len) {
+                        // check if size is not bigger than word
+                        std::cout << "\n";
+                        repetition();
+                        break;
+                    } else {
+                        // error message if size is too big
+                        std::cout << mainWordSub << " does not have that many ";
+                        std::cout << "characters, try again.\n";
+                    }
                 }
             }
         } catch (std::invalid_argument) {
@@ -114,7 +123,7 @@ int subwordStart() {
                 std::cout << subwordStartInt << " is negative, try again.\n";
             } else {
                 len = mainWord.length();
-                if (subwordStartInt <= len) {
+                if (subwordStartInt < len) {
                     // check if size is not bigger than word
                     std::cout << "\n";
                     subwordSize();
